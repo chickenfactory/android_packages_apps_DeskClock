@@ -471,7 +471,6 @@ public class AlarmClockFragment extends DeskClockFragment implements
 
         mAudioManager = (AudioManager)getActivity().getSystemService(Context.AUDIO_SERVICE);
 
-
         if (mUndoShowing) {
             showUndoBar();
         }
@@ -559,7 +558,7 @@ public class AlarmClockFragment extends DeskClockFragment implements
                 mDeletedAlarm = null;
                 mUndoShowing = false;
             }
-        }, 0, getResources().getString(R.string.alarm_deleted), true,0, R.string.alarm_undo, true);
+        }, 0, getResources().getString(R.string.alarm_deleted), true, 0, R.string.alarm_undo, true);
     }
 
     private void showSilentWarningBar() {
@@ -567,11 +566,12 @@ public class AlarmClockFragment extends DeskClockFragment implements
         mUndoBar.show(new ActionableToastBar.ActionClickedListener() {
             @Override
             public void onActionClicked() {
-                mAudioManager.adjustStreamVolume(AudioManager.STREAM_ALARM, AudioManager.ADJUST_SAME, AudioManager.FLAG_SHOW_UI);
+                mAudioManager.adjustStreamVolume(AudioManager.STREAM_ALARM,
+                        AudioManager.ADJUST_SAME, AudioManager.FLAG_SHOW_UI);
                 mUndoShowing = false;
             }
-        }, 0, getResources().getString(R.string.warn_silent_alarm_title), true, R.drawable.ic_menu_alarms,
-        0, true);
+        }, 0, getResources().getString(R.string.warn_silent_alarm_title), true,
+                R.drawable.ic_menu_alarms, 0, true);
     }
 
     @Override

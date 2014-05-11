@@ -132,7 +132,8 @@ public class ActionableToastBar extends LinearLayout {
         // Set action icon
         if (showActionIcon) {
             mActionIcon.setVisibility(VISIBLE);
-            mActionIcon.setImageResource(actionIconResourceId == 0 ? R.drawable.ic_menu_revert_holo_dark : actionIconResourceId);
+            mActionIcon.setImageResource(actionIconResourceId == 0 ?
+                    R.drawable.ic_menu_revert_holo_dark : actionIconResourceId);
         } else {
             mActionIcon.setVisibility(GONE);
         }
