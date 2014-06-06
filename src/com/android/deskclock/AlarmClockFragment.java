@@ -571,7 +571,7 @@ public class AlarmClockFragment extends DeskClockFragment implements
                 mUndoShowing = false;
             }
         }, 0, getResources().getString(R.string.warn_silent_alarm_title), true,
-                R.drawable.ic_menu_alarms, 0, true);
+                R.drawable.ic_alarm, 0, true);
     }
 
     @Override
