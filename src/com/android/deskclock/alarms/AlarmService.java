@@ -18,10 +18,13 @@ package com.android.deskclock.alarms;
 import android.app.Profile;
 import android.app.ProfileManager;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.IBinder;
+import android.os.Vibrator;
 import android.provider.Settings;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
@@ -93,6 +96,22 @@ public class AlarmService extends Service {
                 sendBroadcast(AlarmStateManager.createStateChangeIntent(AlarmService.this,
                         "AlarmService", mCurrentAlarm, AlarmInstance.MISSED_STATE));
                 stopCurrentAlarm();
+            }
+        }
+    };
+
+    /**
+     * Workaround for com.android.server.VibratorService shutting down all
+     * vibrations when the screen is turned off.
+     */
+    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (mCurrentAlarm != null) {
+                if (mCurrentAlarm.mVibrate) {
+                    Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+                    vibrator.vibrate(AlarmKlaxon.sVibratePattern, 0);
+                }
             }
         }
     };
@@ -170,6 +189,11 @@ public class AlarmService extends Service {
     public void onCreate() {
         super.onCreate();
         mTelephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
+        intentFilter.addAction(Intent.ACTION_SCREEN_ON);
+        registerReceiver(mBroadcastReceiver, intentFilter);
     }
 
     @Override
@@ -208,6 +232,7 @@ public class AlarmService extends Service {
     public void onDestroy() {
         Log.v("AlarmService.onDestroy() called");
         super.onDestroy();
+        unregisterReceiver(mBroadcastReceiver);
         stopCurrentAlarm();
     }
 
